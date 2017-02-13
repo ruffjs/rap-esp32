@@ -1,0 +1,22 @@
+{
+    "name": "rap-esp32",
+    "version": "0.1.0",
+    "description": "Rap extension for esp32",
+    "main": "src/index.js",
+    "author": "Nanchao Inc.",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "chalk": "^1.1.1",
+        "thenfail": "^0.4.12",
+        "tmp": "0.0.28",
+        "which": "^1.2.11"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ruffjs/rap-esp32"
+    },
+    "bugs": {
+        "url": "https://github.com/ruffjs/rap-esp32/issues"
+    },
+    "homepage": "https://ruff.io"
+}
