@@ -37,20 +37,20 @@ function flash(options) {
             }
 
             case 'win32': {
-//                let arglst = [];
-//                if (options.erase) {
-//                    arglst.push('-e', 'all');
-//                }
-//                arglst = arglst.concat([
-//                    '-r',
-//                    '-i', 'ICDI',
-//                    '-o', `0x${options.address.toString(16)}`,
-//                    options.binary
-//                ]);
-//                return buildCommand({
-//                    cmd: 'LMFlash.exe',
-//                    args: arglst
-//                });
+                let arglst = [];
+                if (options.erase) {
+                    arglst.push('-e', 'all');
+                }
+                arglst = arglst.concat([
+                    '-r',
+                    '-i', 'ICDI',
+                    '-o', `0x${options.address.toString(16)}`,
+                    options.binary
+                ]);
+                return buildCommand({
+                    cmd: 'LMFlash.exe',
+                    args: arglst
+                });
             }
 
             default: {

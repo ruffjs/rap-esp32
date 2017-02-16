@@ -8,7 +8,6 @@ const chalk = require('chalk');
 const tmp = require('tmp');
 const { Promise } = require('thenfail');
 
-const deployment = require('./deployment');
 const { flash } = require('./flash');
 
 const ORIGIN = 500 * 1024;
@@ -51,6 +50,10 @@ function deploy(sessionInfo, pathInfos, options) {
     let onprogress = options.onprogress || function () { };
     onprogress('deploying', { size: appBuffer.length });
 
+    if (origin < 0) {
+        origin = 4*1024*1024 - appBuffer.length;
+    }
+
     let cp = flash({
         binary: appPath,
         address: origin
@@ -60,6 +63,8 @@ function deploy(sessionInfo, pathInfos, options) {
 }
 
 function generateApp(pathInfos, toCompile, origin) {
+    const deployment = (origin < 0) ? require('./deployment') : require('./deploymentAbsolute');
+
     let compilerCmd = findCommand(ruffCompiler);
     if (!compilerCmd) {
         toCompile = false;
