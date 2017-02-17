@@ -10,7 +10,7 @@ const { spawn, spawnSync } = require('child_process');
 const { Promise } = require('thenfail');
 const { flash } = require('./flash');
 
-const ORIGIN = parseInt('0x300000', 16);
+const ORIGIN = 0x300000;
 const ruffCompiler = 'ruff-compiler';
 
 exports.createDeploymentPackage = createDeploymentPackage;
@@ -50,6 +50,7 @@ function deploy(sessionInfo, pathInfos, options) {
     onprogress('deploying', { size: appBuffer.length });
 
     let cp = flash({
+        type: 'application',
         binary: appPath,
         address: origin
     });

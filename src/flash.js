@@ -2,47 +2,76 @@
 
 const which = require('which');
 const chalk = require('chalk');
-const { spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 
 exports.flash = flash;
 
-/* option format
+/* options format
  *
  * {
- *     binary : 'abc.bin',
- *     address : 0x500,
- *     erase : true
+ *     type: 'firmware',
+ *     binary: {
+ *         'bootloader': bootloaderBinary,
+ *         'partition': partitionBinary,
+ *         'app': appBinary
+ *     },
+ *     address: {
+ *         'bootloader': parseInt('0x1000', 16),
+ *         'partition': parseInt('0x8000', 16),
+ *         'app': parseInt('0x10000', 16)
+ *     },
+ *     erase: ture | false
  * }
+ *
+ * {
+ *     type: 'application',
+ *     binary: appBinary,
+ *     address:  parseInt('0x10000', 16)
+ *     erase: ture | false
+ * }
+ *
  */
+
+let flashTool = 'esptool.py';
 
 let arglst = [];
 arglst.push('--chip', 'esp32');
-arglst.push('--port', '/dev/cu.SLAB_USBtoUART');
-arglst.push('--baud', '1000000');
+arglst.push('--port', '__PORT__');
+arglst.push('--baud', '200000');
 arglst.push('write_flash');
 arglst.push('--flash_mode', 'dio');
 arglst.push('--flash_freq', '40m');
 arglst.push('--flash_size', '4MB');
 
-function flash(options) {
-    // Construct flash
+function flash (options) {
+    // construct flash command
     let cmd = (() => {
         let platform = process.platform;
         switch (platform) {
             case 'darwin':
-            case 'linux':
-            case 'freebsd': {
-                if (!options.erase) {
+                arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
+                if (options.type === 'firmware') {
+                    // bootloader
+                    arglst.push(`0x${options.address.bootloader.toString(16)}`);
+                    arglst.push(`${options.binary.bootloader}`);
+                    // partition
+                    arglst.push(`0x${options.address.partition.toString(16)}`);
+                    arglst.push(`${options.binary.partition}`);
+                    // app
+                    arglst.push(`0x${options.address.app.toString(16)}`);
+                    arglst.push(`${options.binary.app}`);
+                } else if (options.type === 'application') {
                     arglst.push(`0x${options.address.toString(16)}`);
+                    arglst.push(`${options.binary}`);
+                } else {
+                    console.error('Invalid option type `' + options.type + '`');
+                    process.exit(1);
                 }
-                arglst = arglst.concat([
-                    options.binary
-                ]);
+
                 return buildCommand({
-                    cmd: 'esptool.py',
+                    cmd: flashTool,
                     args: arglst
                 });
-            }
 
             default: {
                 console.log(`Unknown platform ${platform}!`);
@@ -51,11 +80,11 @@ function flash(options) {
         }
     })();
 
-    // Flash it
+    // flash it
     return cmd();
 }
 
-function buildCommand(options) {
+function buildCommand (options) {
     // check command
     let cmd = findCommand(options.cmd);
     if (!cmd) {
@@ -76,10 +105,19 @@ function buildCommand(options) {
     };
 }
 
-function findCommand(cmd) {
+function findCommand (cmd) {
     try {
         return which.sync(cmd);
     } catch (e) {
         return '';
     }
 }
+
+Array.prototype.replaceItem = function (src, dst) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] === src) {
+            this[i] = dst;
+        }
+    }
+    return this;
+};

@@ -1,11 +1,18 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const admZip = require('adm-zip');
+
 const { spawn } = require('child_process');
-
 const { Promise } = require('thenfail');
-
 const { flash } = require('./flash');
+
+var bootloaderName = 'bootloader.bin';
+var partitionName = 'partition.bin';
+var appName = 'app.bin';
 
 let commandMap = Object.create({});
 
@@ -22,9 +29,26 @@ commandMap.system = function (program, trace) {
                 process.exit(1);
             }
 
+            var tmpdir = os.tmpdir();
+            var unzip = new admZip(binPath);
+            unzip.extractAllTo(tmpdir);
+
+            var bootloaderBinary = path.join(tmpdir, bootloaderName);
+            var partitionBinary= path.join(tmpdir, partitionName);
+            var appBinary = path.join(tmpdir, appName);
+
             let cp = flash({
-                binary: binPath,
-                address: 0,
+                type: 'firmware',
+                binary: {
+                    'bootloader': bootloaderBinary,
+                    'partition': partitionBinary,
+                    'app': appBinary
+                },
+                address: {
+                    'bootloader': 0x1000,
+                    'partition': 0x8000,
+                    'app': 0x10000
+                },
                 erase: options.erase
             });
 

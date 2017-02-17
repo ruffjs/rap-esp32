@@ -1,6 +1,6 @@
 {
     "name": "rap-esp32",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Rap extension for esp32",
     "main": "src/index.js",
     "author": "Nanchao Inc.",
@@ -9,7 +9,8 @@
         "chalk": "^1.1.1",
         "thenfail": "^0.4.12",
         "tmp": "0.0.28",
-        "which": "^1.2.11"
+        "which": "^1.2.11",
+        "adm-zip": "^0.4.7"
     },
     "repository": {
         "type": "git",
