@@ -54,13 +54,32 @@ commandMap.system = function (program, trace) {
         });
     program
         .command('erase')
-        .description('erase all the flash')
+        .option('-A, --all', 'erase all the flash [default]')
+        .option('-F, --firmware', 'erase only the firmware flash region')
+        .option('-P, --application', 'erase only the application flash region')
+        .description('erase flash')
         .action((options) => {
             trace.push('erase');
 
-            let cp = flash({
-                type: 'erase'
-            });
+            var cp;
+
+            if (options.firmware) {
+                cp = flash({
+                    type: 'erase-region',
+                    address: 0x0,
+                    size: 0x300000
+                });
+            } else if (options.application) {
+                cp = flash({
+                    type: 'erase-region',
+                    address: 0x300000,
+                    size: 0x100000
+                });
+            } else {
+                cp = flash({
+                    type: 'erase-flash'
+                });
+            }
 
             return Promise.for(cp);
         });

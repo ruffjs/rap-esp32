@@ -9,7 +9,13 @@ exports.flash = flash;
 /* options format
  *
  * {
- *     type: 'erase'
+ *     type: 'erase-flash'
+ * }
+ *
+ * {
+ *     type: 'erase-region',
+ *     address: 0x300000,
+ *     size: 0x100000,
  * }
  *
  * {
@@ -49,14 +55,18 @@ function flash (options) {
         switch (platform) {
             case 'darwin':
                 arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
-                if (options.type === 'erase') {
+                if (options.type === 'erase-flash') {
                     arglst = arglst.replaceItem('__COMMAND__', 'erase_flash');
+                } else if (options.type === 'erase-region') {
+                    // XXX: this subcommand is unstable
+                    arglst = arglst.replaceItem('__COMMAND__', 'erase_region');
+                    arglst.push(`0x${options.address.toString(16)}`);
+                    arglst.push(`0x${options.size.toString(16)}`);
                 } else if (options.type === 'flash-firmware') {
                     arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
                     arglst.push('--flash_mode', 'dio');
                     arglst.push('--flash_freq', '40m');
                     arglst.push('--flash_size', '4MB');
-
                     // bootloader
                     arglst.push(`0x${options.address.bootloader.toString(16)}`);
                     arglst.push(`${options.binary.bootloader}`);
@@ -71,7 +81,6 @@ function flash (options) {
                     arglst.push('--flash_mode', 'dio');
                     arglst.push('--flash_freq', '40m');
                     arglst.push('--flash_size', '4MB');
-
                     arglst.push(`0x${options.address.toString(16)}`);
                     arglst.push(`${options.binary}`);
                 } else {
