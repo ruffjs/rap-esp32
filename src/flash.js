@@ -9,7 +9,11 @@ exports.flash = flash;
 /* options format
  *
  * {
- *     type: 'firmware',
+ *     type: 'erase'
+ * }
+ *
+ * {
+ *     type: 'flash-firmware',
  *     binary: {
  *         'bootloader': bootloaderBinary,
  *         'partition': partitionBinary,
@@ -19,15 +23,13 @@ exports.flash = flash;
  *         'bootloader': parseInt('0x1000', 16),
  *         'partition': parseInt('0x8000', 16),
  *         'app': parseInt('0x10000', 16)
- *     },
- *     erase: ture | false
+ *     }
  * }
  *
  * {
- *     type: 'application',
+ *     type: 'flash-application',
  *     binary: appBinary,
  *     address:  parseInt('0x10000', 16)
- *     erase: ture | false
  * }
  *
  */
@@ -38,10 +40,7 @@ let arglst = [];
 arglst.push('--chip', 'esp32');
 arglst.push('--port', '__PORT__');
 arglst.push('--baud', '200000');
-arglst.push('write_flash');
-arglst.push('--flash_mode', 'dio');
-arglst.push('--flash_freq', '40m');
-arglst.push('--flash_size', '4MB');
+arglst.push('__COMMAND__');
 
 function flash (options) {
     // construct flash command
@@ -50,7 +49,14 @@ function flash (options) {
         switch (platform) {
             case 'darwin':
                 arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
-                if (options.type === 'firmware') {
+                if (options.type === 'erase') {
+                    arglst = arglst.replaceItem('__COMMAND__', 'erase_flash');
+                } else if (options.type === 'flash-firmware') {
+                    arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
+                    arglst.push('--flash_mode', 'dio');
+                    arglst.push('--flash_freq', '40m');
+                    arglst.push('--flash_size', '4MB');
+
                     // bootloader
                     arglst.push(`0x${options.address.bootloader.toString(16)}`);
                     arglst.push(`${options.binary.bootloader}`);
@@ -60,7 +66,12 @@ function flash (options) {
                     // app
                     arglst.push(`0x${options.address.app.toString(16)}`);
                     arglst.push(`${options.binary.app}`);
-                } else if (options.type === 'application') {
+                } else if (options.type === 'flash-application') {
+                    arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
+                    arglst.push('--flash_mode', 'dio');
+                    arglst.push('--flash_freq', '40m');
+                    arglst.push('--flash_size', '4MB');
+
                     arglst.push(`0x${options.address.toString(16)}`);
                     arglst.push(`${options.binary}`);
                 } else {

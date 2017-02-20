@@ -50,7 +50,7 @@ function deploy(sessionInfo, pathInfos, options) {
     onprogress('deploying', { size: appBuffer.length });
 
     let cp = flash({
-        type: 'application',
+        type: 'flash-application',
         binary: appPath,
         address: origin
     });

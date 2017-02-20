@@ -19,9 +19,8 @@ let commandMap = Object.create({});
 commandMap.system = function (program, trace) {
     program
         .command('upgrade <firmware-binary-file>')
-        .option('-E, --erase', 'erase entire flash')
         .description('upgrade ruff firmware')
-        .action((binPath, options) => {
+        .action((binPath) => {
             trace.push('upgrade');
 
             if (!fs.existsSync(binPath)) {
@@ -38,7 +37,7 @@ commandMap.system = function (program, trace) {
             var appBinary = path.join(tmpdir, appName);
 
             let cp = flash({
-                type: 'firmware',
+                type: 'flash-firmware',
                 binary: {
                     'bootloader': bootloaderBinary,
                     'partition': partitionBinary,
@@ -48,8 +47,19 @@ commandMap.system = function (program, trace) {
                     'bootloader': 0x1000,
                     'partition': 0x8000,
                     'app': 0x10000
-                },
-                erase: options.erase
+                }
+            });
+
+            return Promise.for(cp);
+        });
+    program
+        .command('erase')
+        .description('erase all the flash')
+        .action((options) => {
+            trace.push('erase');
+
+            let cp = flash({
+                type: 'erase'
             });
 
             return Promise.for(cp);
