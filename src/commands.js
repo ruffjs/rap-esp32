@@ -28,13 +28,25 @@ commandMap.system = function (program, trace) {
                 process.exit(1);
             }
 
-            var tmpdir = os.tmpdir();
             var unzip = new admZip(binPath);
-            unzip.extractAllTo(tmpdir);
+            var tmpdir = os.tmpdir();
 
             var bootloaderBinary = path.join(tmpdir, bootloaderName);
             var partitionBinary= path.join(tmpdir, partitionName);
             var appBinary = path.join(tmpdir, appName);
+
+            // Remove the existing files
+            if (fs.existsSync(bootloaderBinary)) {
+                fs.unlinkSync(bootloaderBinary);
+            }
+            if (fs.existsSync(partitionBinary)) {
+                fs.unlinkSync(partitionBinary);
+            }
+            if (fs.existsSync(appBinary)) {
+                fs.unlinkSync(appBinary);
+            }
+
+            unzip.extractAllTo(tmpdir);
 
             let cp = flash({
                 type: 'flash-firmware',
