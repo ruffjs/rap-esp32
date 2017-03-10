@@ -1,27 +1,24 @@
 'use strict';
 
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-
-const admZip = require('adm-zip');
-
-const { spawn } = require('child_process');
 const { Promise } = require('thenfail');
 const { flash } = require('./flash');
 
-var bootloaderName = 'bootloader.bin';
-var partitionName = 'partition.bin';
-var appName = 'app.bin';
-
-let commandMap = Object.create({});
-
-commandMap.system = function (program, trace) {
+exports.system = function (rap, program, trace) {
     program
         .command('upgrade <firmware-binary-file>')
         .description('upgrade ruff firmware')
         .action((binPath) => {
             trace.push('upgrade');
+
+            const fs = require('fs');
+            const os = require('os');
+            const path = require('path');
+
+            const admZip = require('adm-zip');
+
+            var bootloaderName = 'bootloader.bin';
+            var partitionName = 'partition.bin';
+            var appName = 'app.bin';
 
             if (!fs.existsSync(binPath)) {
                 console.error('The binary file specified does not exist.');
@@ -96,9 +93,3 @@ commandMap.system = function (program, trace) {
             return Promise.for(cp);
         });
 };
-
-function setupCommands(program, commandName, trace) {
-    commandMap[commandName](program, trace);
-}
-
-exports.setupCommands = setupCommands;

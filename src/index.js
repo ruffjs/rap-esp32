@@ -1,21 +1,11 @@
 'use strict';
 
-const { Promise } = require('thenfail');
+exports.version = 1;
+
+exports.commands = Object.create(null);
 
 Object.assign(
-    exports,
-    require('./commands'),
-    require('./device'),
-    require('./app')
+    exports.commands,
+    require('./commands/system'),
+    require('./commands/deploy')
 );
-
-function preflight() {
-    return Promise.then(() => {
-        return {
-            ruffVersion: null,
-            authorization: null
-        };
-    });
-}
-
-exports.preflight = preflight;
