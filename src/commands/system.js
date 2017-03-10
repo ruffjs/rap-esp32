@@ -1,7 +1,7 @@
 'use strict';
 
 const { Promise } = require('thenfail');
-const { flash } = require('./flash');
+const { flash } = require('../lib/flash');
 
 exports.system = function (rap, program, trace) {
     program

@@ -4,11 +4,11 @@ const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
 const tmp = require('tmp');
-const deployment = require('./deployment');
+const deployment = require('../lib/deployment');
 
 const { spawn, spawnSync } = require('child_process');
 const { Promise } = require('thenfail');
-const { flash } = require('./flash');
+const { flash } = require('../lib/flash');
 
 const ORIGIN = 0x300000;
 const ruffCompiler = 'ruff-compiler';
@@ -25,12 +25,10 @@ exports.deploy = function (rap, program, trace) {
 function action(rap, program) {
     let toCompile = !program.source;
 
-    // lm4flash requires 4K, but OTA doesn't
+    // TODO(Young): copied from rap-tm4c1294, shoule have no side effect on rap-esp32
     let alignment = Number.parseInt(program.align) || 4 * 1024;
     alignment = Math.floor(alignment / 8) * 8;
 
-    // disable absolute addressing by default
-    program.address = program.address || '-1';
     let origin = Number.parseInt(program.address) || ORIGIN;
 
     // figure out APP path
