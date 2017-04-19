@@ -1,6 +1,6 @@
 {
     "name": "rap-esp32",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "description": "Rap extension for esp32",
     "main": "src/index.js",
     "author": "Nanchao Inc.",
