@@ -55,6 +55,9 @@ function flash (options) {
         switch (platform) {
             case 'darwin':
                 arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
+            case 'win':
+                arglst = arglst.replaceItem('__PORT__', 'COM1');
+
                 if (options.type === 'erase-flash') {
                     arglst = arglst.replaceItem('__COMMAND__', 'erase_flash');
                 } else if (options.type === 'erase-region') {
