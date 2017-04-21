@@ -55,12 +55,6 @@ function flash (options) {
         switch (platform) {
             case 'darwin':
                 arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
-            // TODO: support to configure port outside
-            case 'linux':
-                arglst = arglst.replaceItem('__PORT__', '/dev/ttyUSB0');
-            case 'win32':
-                arglst = arglst.replaceItem('__PORT__', 'COM1');
-
                 if (options.type === 'erase-flash') {
                     arglst = arglst.replaceItem('__COMMAND__', 'erase_flash');
                 } else if (options.type === 'erase-region') {
