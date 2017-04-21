@@ -45,7 +45,7 @@ let flashTool = 'esptool.py';
 let arglst = [];
 arglst.push('--chip', 'esp32');
 arglst.push('--port', '__PORT__');
-arglst.push('--baud', '200000');
+arglst.push('--baud', '115200');
 arglst.push('__COMMAND__');
 
 function flash (options) {
