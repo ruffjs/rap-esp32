@@ -7,5 +7,6 @@ exports.commands = Object.create(null);
 Object.assign(
     exports.commands,
     require('./commands/system'),
+    require('./commands/log'),
     require('./commands/deploy')
 );
