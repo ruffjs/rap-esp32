@@ -4,7 +4,8 @@ const chalk = require('chalk');
 
 exports.log = function (rap, program, trace) {
     program
-        .description('stream system and application logs to output');
+        .description('stream system and application logs to output')
+        .option('--port [port]', 'designate port');
 
     trace.push(action);
 };
@@ -26,6 +27,10 @@ function action(rap, program) {
         default:
             console.log(chalk.red(`Unsupported platform "${process.platform}".`));
             return;
+    }
+
+    if (program.port) {
+        path = program.port;
     }
 
     var port = new serial.SerialPort(path, {

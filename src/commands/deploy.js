@@ -17,7 +17,8 @@ exports.deploy = function (rap, program, trace) {
     program
         .usage('[options...]')
         .option('--source', 'deploy source code directly without pre-compilation')
-        .option('--package [path]', 'create the deployment package');
+        .option('--package [path]', 'create the deployment package')
+        .option('--port [port]', 'designate port');
 
     trace.push(action);
 };
@@ -64,6 +65,7 @@ function action(rap, program) {
 
                 let cp = flash({
                     type: 'flash-application',
+                    port: program.port,
                     binary: appPath,
                     address: origin
                 });

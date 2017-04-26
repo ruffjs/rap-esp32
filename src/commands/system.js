@@ -7,7 +7,8 @@ exports.system = function (rap, program, trace) {
     program
         .command('upgrade <firmware-binary-file>')
         .description('upgrade ruff firmware')
-        .action((binPath) => {
+        .option('--port [port]', 'designate port')
+        .action((binPath, program) => {
             trace.push('upgrade');
 
             const fs = require('fs');
@@ -47,6 +48,7 @@ exports.system = function (rap, program, trace) {
 
             let cp = flash({
                 type: 'flash-firmware',
+                port: program.port,
                 binary: {
                     'bootloader': bootloaderBinary,
                     'partition': partitionBinary,
@@ -66,6 +68,7 @@ exports.system = function (rap, program, trace) {
         .option('-A, --all', 'erase all the flash [default]')
         .option('-F, --firmware', 'erase only the firmware flash region')
         .option('-P, --application', 'erase only the application flash region')
+        .option('--port [port]', 'designate port')
         .description('erase flash')
         .action((options) => {
             trace.push('erase');
@@ -75,18 +78,21 @@ exports.system = function (rap, program, trace) {
             if (options.firmware) {
                 cp = flash({
                     type: 'erase-region',
+                    port: options.port,
                     address: 0x0,
                     size: 0x300000
                 });
             } else if (options.application) {
                 cp = flash({
                     type: 'erase-region',
+                    port: options.port,
                     address: 0x300000,
                     size: 0x100000
                 });
             } else {
                 cp = flash({
-                    type: 'erase-flash'
+                    type: 'erase-flash',
+                    port: options.port
                 });
             }
 

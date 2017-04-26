@@ -55,49 +55,60 @@ function flash (options) {
         switch (platform) {
             case 'darwin':
                 arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
-                if (options.type === 'erase-flash') {
-                    arglst = arglst.replaceItem('__COMMAND__', 'erase_flash');
-                } else if (options.type === 'erase-region') {
-                    // XXX: this subcommand is unstable
-                    arglst = arglst.replaceItem('__COMMAND__', 'erase_region');
-                    arglst.push(`0x${options.address.toString(16)}`);
-                    arglst.push(`0x${options.size.toString(16)}`);
-                } else if (options.type === 'flash-firmware') {
-                    arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
-                    arglst.push('--flash_mode', 'dio');
-                    arglst.push('--flash_freq', '40m');
-                    arglst.push('--flash_size', '4MB');
-                    // bootloader
-                    arglst.push(`0x${options.address.bootloader.toString(16)}`);
-                    arglst.push(`${options.binary.bootloader}`);
-                    // partition
-                    arglst.push(`0x${options.address.partition.toString(16)}`);
-                    arglst.push(`${options.binary.partition}`);
-                    // app
-                    arglst.push(`0x${options.address.app.toString(16)}`);
-                    arglst.push(`${options.binary.app}`);
-                } else if (options.type === 'flash-application') {
-                    arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
-                    arglst.push('--flash_mode', 'dio');
-                    arglst.push('--flash_freq', '40m');
-                    arglst.push('--flash_size', '4MB');
-                    arglst.push(`0x${options.address.toString(16)}`);
-                    arglst.push(`${options.binary}`);
-                } else {
-                    console.error('Invalid option type `' + options.type + '`');
-                    process.exit(1);
-                }
-
-                return buildCommand({
-                    cmd: flashTool,
-                    args: arglst
-                });
-
+                break;
+            case 'linux':
+                arglst = arglst.replaceItem('__PORT__', '/dev/ttyUSB0');
+                break;
+            case 'win32':
+                arglst = arglst.replaceItem('__PORT__', 'COM1');
+                break;
             default: {
                 console.log(`Unknown platform ${platform}!`);
                 process.exit(1);
             }
         }
+
+        if (options.port) {
+            arglst = arglst.replaceItem('__PORT__', options.port);
+        }
+
+        if (options.type === 'erase-flash') {
+            arglst = arglst.replaceItem('__COMMAND__', 'erase_flash');
+        } else if (options.type === 'erase-region') {
+            // XXX: this subcommand is unstable
+            arglst = arglst.replaceItem('__COMMAND__', 'erase_region');
+            arglst.push(`0x${options.address.toString(16)}`);
+            arglst.push(`0x${options.size.toString(16)}`);
+        } else if (options.type === 'flash-firmware') {
+            arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
+            arglst.push('--flash_mode', 'dio');
+            arglst.push('--flash_freq', '40m');
+            arglst.push('--flash_size', '4MB');
+            // bootloader
+            arglst.push(`0x${options.address.bootloader.toString(16)}`);
+            arglst.push(`${options.binary.bootloader}`);
+            // partition
+            arglst.push(`0x${options.address.partition.toString(16)}`);
+            arglst.push(`${options.binary.partition}`);
+            // app
+            arglst.push(`0x${options.address.app.toString(16)}`);
+            arglst.push(`${options.binary.app}`);
+        } else if (options.type === 'flash-application') {
+            arglst = arglst.replaceItem('__COMMAND__', 'write_flash');
+            arglst.push('--flash_mode', 'dio');
+            arglst.push('--flash_freq', '40m');
+            arglst.push('--flash_size', '4MB');
+            arglst.push(`0x${options.address.toString(16)}`);
+            arglst.push(`${options.binary}`);
+        } else {
+            console.error('Invalid option type `' + options.type + '`');
+            process.exit(1);
+        }
+
+        return buildCommand({
+            cmd: flashTool,
+            args: arglst
+        });
     })();
 
     // flash it
