@@ -2,7 +2,13 @@
 
 This project is rap extension, or rap plug-in for ESP32.
 
-It is dependent on Rap extension (plug-in) mechanism, to customize board-specific rap subcommands. This rap extension customize two sub commands `rap deploy` and `rap system`.
+It is dependent on Rap extension (plug-in) mechanism, to customize board-specific rap subcommands. This rap extension customize the following sub commands.
+
+- `rap deploy`: deploy Ruff Application to ESP32 board flash
+- `rap system`
+    - `rap system erase`: erase ESP32 board flash
+    - `rap system upgrade`: flash Ruff OS firmware to ESP32 board flash
+- `rap log`: print system and application logs
 
 The project can be referenced by package.json of Ruff board project. For example, below is [esp32-air-v40](https://github.com/ruff-drivers/esp32-air-v40) board package.json.
 
@@ -17,7 +23,8 @@ The project can be referenced by package.json of Ruff board project. For example
     },
     "ruff": {
         "dependencies": {
-            "led-gpio": "^2.0.0"
+            "led-gpio": "^3.0.0",
+            "esp32-wifi": "^0.1.0"
         }
     }
 }
