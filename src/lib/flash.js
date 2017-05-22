@@ -51,25 +51,25 @@ arglst.push('__COMMAND__');
 function flash (options) {
     // construct flash command
     let cmd = (() => {
-        let platform = process.platform;
-        switch (platform) {
-            case 'darwin':
-                arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
-                break;
-            case 'linux':
-                arglst = arglst.replaceItem('__PORT__', '/dev/ttyUSB0');
-                break;
-            case 'win32':
-                arglst = arglst.replaceItem('__PORT__', 'COM1');
-                break;
-            default: {
-                console.log(`Unknown platform ${platform}!`);
-                process.exit(1);
-            }
-        }
-
         if (options.port) {
             arglst = arglst.replaceItem('__PORT__', options.port);
+        } else {
+            let platform = process.platform;
+            switch (platform) {
+                case 'darwin':
+                    arglst = arglst.replaceItem('__PORT__', '/dev/cu.SLAB_USBtoUART');
+                    break;
+                case 'linux':
+                    arglst = arglst.replaceItem('__PORT__', '/dev/ttyUSB0');
+                    break;
+                case 'win32':
+                    arglst = arglst.replaceItem('__PORT__', 'COM1');
+                    break;
+                default: {
+                    console.log(`Unknown platform ${platform}!`);
+                    process.exit(1);
+                }
+            }
         }
 
         if (options.type === 'erase-flash') {
