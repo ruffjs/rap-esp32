@@ -7,7 +7,6 @@ exports.system = function (rap, program, trace) {
     program
         .command('upgrade <firmware-binary-file>')
         .description('upgrade ruff firmware')
-        .option('--port [port]', 'designate port')
         .action((binPath, program) => {
             trace.push('upgrade');
 
@@ -68,31 +67,30 @@ exports.system = function (rap, program, trace) {
         .option('-A, --all', 'erase all the flash [default]')
         .option('-F, --firmware', 'erase only the firmware flash region')
         .option('-P, --application', 'erase only the application flash region')
-        .option('--port [port]', 'designate port')
         .description('erase flash')
-        .action((options) => {
+        .action((program) => {
             trace.push('erase');
 
             var cp;
 
-            if (options.firmware) {
+            if (program.firmware) {
                 cp = flash({
                     type: 'erase-region',
-                    port: options.port,
+                    port: program.port,
                     address: 0x0,
                     size: 0x300000
                 });
-            } else if (options.application) {
+            } else if (program.application) {
                 cp = flash({
                     type: 'erase-region',
-                    port: options.port,
+                    port: program.port,
                     address: 0x300000,
                     size: 0x100000
                 });
             } else {
                 cp = flash({
                     type: 'erase-flash',
-                    port: options.port
+                    port: program.port
                 });
             }
 
