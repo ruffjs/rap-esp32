@@ -7,6 +7,7 @@ exports.system = function (rap, program, trace) {
     program
         .command('upgrade <firmware-binary-file>')
         .description('upgrade ruff firmware')
+        .option('--port [port]', 'designate port')
         .action((binPath, program) => {
             trace.push('upgrade');
 

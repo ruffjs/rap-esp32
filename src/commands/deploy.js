@@ -18,6 +18,7 @@ exports.deploy = function (rap, program, trace) {
         .usage('[options...]')
         .option('--source', 'deploy source code directly without pre-compilation')
         .option('--package [path]', 'create the deployment package')
+        .option('--port [port]', 'designate port');
 
     trace.push(action);
 };
