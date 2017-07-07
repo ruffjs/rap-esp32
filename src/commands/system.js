@@ -12,7 +12,7 @@ exports.system = function (rap, program, trace) {
         .action((binPath, program) => {
             trace.push('upgrade');
 
-            var parameters = parametersJS.getParameters(rap, program);
+            var parameters = parametersJS.getParameters(rap, program.parent);
             if (parameters === undefined) {
                 return;
             }
@@ -80,7 +80,7 @@ exports.system = function (rap, program, trace) {
         .action((program) => {
             trace.push('erase');
 
-            var parameters = parametersJS.getParameters(program);
+            var parameters = parametersJS.getParameters(rap, program.parent);
             if (parameters === undefined) {
                 return;
             }
