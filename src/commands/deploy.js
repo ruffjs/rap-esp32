@@ -20,8 +20,7 @@ exports.deploy = function (rap, program, trace) {
         .usage('[options...]')
         .option('--source', 'deploy source code directly without pre-compilation')
         .option('--package [path]', 'create the deployment package')
-        .option('--parameters [port=<port>]', 'designate port')
-        .option('--session-parameters []', 'use rap session mechanism');
+        .option('--parameters [port=<port>]', 'designate port');
 
     trace.push(action);
 };

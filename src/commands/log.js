@@ -6,8 +6,7 @@ const parametersJS = require('./parameters.js');
 exports.log = function (rap, program, trace) {
     program
         .description('stream system and application logs to output')
-        .option('--parameters [port=<port>]', 'designate port')
-        .option('--session-parameters []', 'use rap session mechanism');
+        .option('--parameters [port=<port>]', 'designate port');
 
     trace.push(action);
 };

@@ -9,7 +9,6 @@ exports.system = function (rap, program, trace) {
         .command('upgrade <firmware-binary-file>')
         .description('upgrade ruff firmware')
         .option('--parameters [port=<port>]', 'designate port')
-        .option('--session-parameters []', 'use rap session mechanism')
         .action((binPath, program) => {
             trace.push('upgrade');
 
@@ -77,7 +76,6 @@ exports.system = function (rap, program, trace) {
         .option('-F, --firmware', 'erase only the firmware flash region')
         .option('-P, --application', 'erase only the application flash region')
         .option('--parameters [port=<port>]', 'designate port')
-        .option('--session-parameters []', 'use rap session mechanism')
         .description('erase flash')
         .action((program) => {
             trace.push('erase');
