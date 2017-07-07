@@ -1,17 +1,22 @@
 'use strict';
 
 const chalk = require('chalk');
+const parametersJS = require('./parameters.js');
 
 exports.log = function (rap, program, trace) {
     program
         .description('stream system and application logs to output')
-        .option('--port [port]', 'designate port');
+        .option('--parameters [port=<port>]', 'designate port')
+        .option('--session-parameters []', 'use rap session mechanism');
 
     trace.push(action);
 };
 
 function action(rap, program) {
     var serial = rap.getSerialPort();
+
+    var parameters = parametersJS.getParameters(rap, program);
+    program.port = parameters.port;
 
     var path;
     switch (process.platform) {

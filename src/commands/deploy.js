@@ -6,6 +6,8 @@ const chalk = require('chalk');
 const tmp = require('tmp');
 const deployment = require('../lib/deployment');
 
+const parametersJS = require('./parameters.js');
+
 const { spawn, spawnSync } = require('child_process');
 const { Promise } = require('thenfail');
 const { flash } = require('../lib/flash');
@@ -18,13 +20,17 @@ exports.deploy = function (rap, program, trace) {
         .usage('[options...]')
         .option('--source', 'deploy source code directly without pre-compilation')
         .option('--package [path]', 'create the deployment package')
-        .option('--port [port]', 'designate port');
+        .option('--parameters [port=<port>]', 'designate port')
+        .option('--session-parameters []', 'use rap session mechanism');
 
     trace.push(action);
 };
 
 function action(rap, program) {
     let toCompile = !program.source;
+
+    var parameters = parametersJS.getParameters(rap, program);
+    program.port = parameters.port;
 
     // TODO(Young): copied from rap-tm4c1294, shoule have no side effect on rap-esp32
     let alignment = Number.parseInt(program.align) || 4 * 1024;

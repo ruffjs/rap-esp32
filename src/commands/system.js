@@ -1,5 +1,6 @@
 'use strict';
 
+const parametersJS = require('./parameters.js');
 const { Promise } = require('thenfail');
 const { flash } = require('../lib/flash');
 
@@ -7,9 +8,13 @@ exports.system = function (rap, program, trace) {
     program
         .command('upgrade <firmware-binary-file>')
         .description('upgrade ruff firmware')
-        .option('--port [port]', 'designate port')
+        .option('--parameters [port=<port>]', 'designate port')
+        .option('--session-parameters []', 'use rap session mechanism')
         .action((binPath, program) => {
             trace.push('upgrade');
+
+            var parameters = parametersJS.getParameters(rap, program);
+            program.port = parameters.port;
 
             const fs = require('fs');
             const os = require('os');
@@ -68,9 +73,14 @@ exports.system = function (rap, program, trace) {
         .option('-A, --all', 'erase all the flash [default]')
         .option('-F, --firmware', 'erase only the firmware flash region')
         .option('-P, --application', 'erase only the application flash region')
+        .option('--parameters [port=<port>]', 'designate port')
+        .option('--session-parameters []', 'use rap session mechanism')
         .description('erase flash')
         .action((program) => {
             trace.push('erase');
+
+            var parameters = parametersJS.getParameters(program);
+            program.port = parameters.port;
 
             var cp;
 
