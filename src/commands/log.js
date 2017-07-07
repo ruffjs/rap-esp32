@@ -16,6 +16,9 @@ function action(rap, program) {
     var serial = rap.getSerialPort();
 
     var parameters = parametersJS.getParameters(rap, program);
+    if (parameters === undefined) {
+        return;
+    }
     program.port = parameters.port;
 
     var path;

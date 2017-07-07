@@ -30,6 +30,9 @@ function action(rap, program) {
     let toCompile = !program.source;
 
     var parameters = parametersJS.getParameters(rap, program);
+    if (parameters === undefined) {
+        return;
+    }
     program.port = parameters.port;
 
     // TODO(Young): copied from rap-tm4c1294, shoule have no side effect on rap-esp32

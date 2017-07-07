@@ -14,6 +14,9 @@ exports.system = function (rap, program, trace) {
             trace.push('upgrade');
 
             var parameters = parametersJS.getParameters(rap, program);
+            if (parameters === undefined) {
+                return;
+            }
             program.port = parameters.port;
 
             const fs = require('fs');
@@ -80,6 +83,9 @@ exports.system = function (rap, program, trace) {
             trace.push('erase');
 
             var parameters = parametersJS.getParameters(program);
+            if (parameters === undefined) {
+                return;
+            }
             program.port = parameters.port;
 
             var cp;

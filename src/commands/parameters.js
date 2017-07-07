@@ -1,11 +1,8 @@
 function getParameters (rap, program) {
-    console.log(program.parameters);
-    console.log(program.sessionParameters);
-
     if (program.parameters === undefined && program.sessionParameters === undefined) {
         console.log('No target designated. ' +
                     'You should add --parameters option or use rap session mechanism');
-        return;
+        return undefined;
     }
 
     var parameters;
