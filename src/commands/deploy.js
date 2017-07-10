@@ -28,12 +28,6 @@ exports.deploy = function (rap, program, trace) {
 function action(rap, program) {
     let toCompile = !program.source;
 
-    var parameters = parametersJS.getParameters(rap, program);
-    if (parameters === undefined) {
-        return;
-    }
-    program.port = parameters.port;
-
     // TODO(Young): copied from rap-tm4c1294, shoule have no side effect on rap-esp32
     let alignment = Number.parseInt(program.align) || 4 * 1024;
     alignment = Math.floor(alignment / 8) * 8;
@@ -66,6 +60,13 @@ function action(rap, program) {
                     console.log(`Package created at "${appPath}"`);
                 });
             } else {
+                // get program.port
+                var parameters = parametersJS.getParameters(rap, program);
+                if (parameters === undefined) {
+                    return;
+                }
+                program.port = parameters.port;
+
                 // create package and deploy it
                 let appPath = tmp.tmpNameSync();
                 let appBuffer = generateApp(manifest, toCompile, origin, alignment);
