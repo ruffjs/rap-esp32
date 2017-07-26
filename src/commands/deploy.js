@@ -47,6 +47,15 @@ function action(rap, program) {
         .getDeploymentManifest()
         .then(manifest => {
             if (appPath) {
+                // generate ruff_box.json
+                for (var i = 0; i < manifest.length; i++) {
+                    var element = manifest[i];
+                    if (element.name === 'ruff_box.json') {
+                        fs.writeFileSync(element.name, element.content.toString());
+                        console.log('Save ' + element.name + ' succesfully');
+                    }
+                }
+
                 // create package only
                 return new Promise((resolve, reject) => {
                     try {
